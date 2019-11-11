@@ -1,0 +1,90 @@
+Initialize engine version: 2018.2.9f1 (2207421190e9)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 1050 (ID=0x1c8d)
+    Vendor:   
+    VRAM:     4021 MB
+    Driver:   26.21.14.4108
+Begin MonoManager ReloadAssembly
+- Completed reload, in  0.060 seconds
+<RI> Initializing input.
+XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.514700 ms
+new url:ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+Setting up 4 worker threads for Enlighten.
+  Thread -> id: 11d0 -> priority: 1 
+  Thread -> id: 1788 -> priority: 1 
+  Thread -> id: 1998 -> priority: 1 
+  Thread -> id: 160 -> priority: 1 
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 5.348100 ms
+found 504 path points. to load
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+
+Unloading 7 unused Assets to reduce memory usage. Loaded Objects now: 6093.
+Total: 1.891300 ms (FindLiveObjects: 0.908500 ms CreateObjectMapping: 0.043500 ms MarkObjects: 0.912000 ms  DeleteObjects: 0.027000 ms)
+
+new url:ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+Opening file for log at: W:/Donkeysim/Donkeycar/DonkeySimWindows/DonkeySim_Data/../log/log_car_controls.txt
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 6.604300 ms
+new url:ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+
+Unloading 154 unused Assets to reduce memory usage. Loaded Objects now: 594.
+Total: 2.591500 ms (FindLiveObjects: 0.609600 ms CreateObjectMapping: 0.024100 ms MarkObjects: 0.676000 ms  DeleteObjects: 1.281300 ms)
+
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.655300 ms
+found 522 path points. to load
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 3023.
+Total: 1.695300 ms (FindLiveObjects: 0.926700 ms CreateObjectMapping: 0.038300 ms MarkObjects: 0.711400 ms  DeleteObjects: 0.018100 ms)
+
+new url:ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+Opening file for path at: W:/Donkeysim/Donkeycar/DonkeySimWindows/DonkeySim_Data/Resources/wh_race_lane
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+11/5/2019 7:57:25 PM|Fatal|WebSocket.acceptException|System.Threading.ThreadAbortException: Thread was being aborted
+                             at WebSocketSharp.WebSocketStream.ReadHandshake[HandshakeResponse] (System.Func`2 parser, Int32 millisecondsTimeout) [0x00000] in <filename unknown>:0 
+                             at WebSocketSharp.WebSocketStream.ReadHandshakeResponse () [0x00000] in <filename unknown>:0 
+                             at WebSocketSharp.WebSocket.receiveHandshakeResponse () [0x00000] in <filename unknown>:0 
+                             at WebSocketSharp.WebSocket.sendHandshakeRequest (WebSocketSharp.HandshakeRequest request) [0x00000] in <filename unknown>:0 
+                             at WebSocketSharp.WebSocket.sendHandshakeRequest () [0x00000] in <filename unknown>:0 
+                             at WebSocketSharp.WebSocket.doHandshake () [0x00000] in <filename unknown>:0 
+                             at WebSocketSharp.WebSocket.connect () [0x00000] in <filename unknown>:0 
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 1.927500 ms
+new url:ws://127.0.0.1:9090/socket.io/?EIO=4&transport=websocket
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Export/Debug.bindings.h Line: 43)
+
+
+Unloading 131 unused Assets to reduce memory usage. Loaded Objects now: 595.
+Total: 1.801600 ms (FindLiveObjects: 0.987000 ms CreateObjectMapping: 0.043300 ms MarkObjects: 0.558100 ms  DeleteObjects: 0.213000 ms)
+
+11/5/2019 7:57:34 PM|Error|WebSocket.Send|A WebSocket connection isn't established.
+11/5/2019 7:57:34 PM|Error|WebSocket.Send|A WebSocket connection isn't established.
