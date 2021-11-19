@@ -468,6 +468,10 @@ def get_model_by_type(model_type, cfg):
     elif model_type == "fastai":
         from donkeycar.parts.fastai import FastAiPilot
         kl = FastAiPilot()
+    elif model_type == "lywcnn":
+        kl = KerasLYWCNN(input_shape=input_shape, roi_crop=roi_crop)
+    elif model_type == "lywrnn":
+        kl = KerasRNN_LSTM_LYW(input_shape=input_shape, roi_crop=roi_crop)
     else:
         raise Exception("unknown model type: %s" % model_type)
 
