@@ -709,3 +709,112 @@ def default_latent(num_outputs, input_shape):
     model = Model(inputs=[img_in], outputs=outputs)
     
     return model
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class KerasLYWCNN(KerasPilot):
+    def __init__(self, num_outputs=2, input_shape=(120, 160, 3), roi_crop=(0, 0), *args, **kwargs):
+        super(KerasLYWCNN, self).__init__(*args, **kwargs)
+        self.model = CNN_LYW(num_outputs, input_shape, roi_crop)
+        self.compile()
+    def compile(self):
+        self.model.compile(optimizer=self.optimizer, loss='mse')
+    def run(self, img_arr):
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        outputs = self.model.predict(img_arr)
+        steering = outputs[0]
+        throttle = outputs[1]
+        return steering[0][0], throttle[0][0]
+
+# 0.068449 这个也蛮好的，就是有点慢
+def CNN_LYW(num_outputs, input_shape=(120, 160, 3), roi_crop=(0, 0)):
+    drop = 0.1
+    input_shape = adjust_input_shape(input_shape, roi_crop)
+    img_in = Input(shape=input_shape, name='img_in')
+    x = img_in
+    x = Convolution2D(28, (5, 5), strides=(2, 2), activation='relu', name="conv2d_1")(x)
+    x = Dropout(drop)(x)
+    x = Convolution2D(32, (5, 5), strides=(1, 1), activation='relu', name="conv2d_2")(x)
+    x = Dropout(drop)(x)
+    x = Convolution2D(64, (5, 5), strides=(1, 1), activation='relu', name="conv2d_3")(x)
+    x = Dropout(drop)(x)
+    x = Convolution2D(64, (3, 3), strides=(1, 1), activation='relu', name="conv2d_4")(x)
+    x = Dropout(drop)(x)
+    x = Convolution2D(64, (3, 3), strides=(1, 1), activation='relu', name="conv2d_5")(x)
+    x = Dropout(drop)(x)
+    # x = Convolution2D(64, (3, 3), strides=(1, 1), activation='relu', name="conv2d_6")(x)
+    # x = Dropout(drop)(x)
+    x = Flatten(name='flattened')(x)
+    x = Dense(100, activation='relu')(x)
+    x = Dropout(drop)(x)
+    x = Dense(50, activation='relu')(x)
+    x = Dropout(drop)(x)
+    outputs = []
+    for i in range(num_outputs):
+        outputs.append(Dense(1, activation='linear', name='n_outputs' + str(i))(x))
+    model = Model(inputs=[img_in], outputs=outputs)
+    return model
+
+class KerasRNN_LSTM_LYW(KerasPilot):
+    def __init__(self, image_w=160, image_h=120, image_d=3, seq_length=3, num_outputs=2, *args, **kwargs):
+        super(KerasRNN_LSTM, self).__init__(*args, **kwargs)
+        image_shape = (image_h, image_w, image_d)
+        self.model = rnn_lstm_lyw(seq_length=seq_length,num_outputs=num_outputs,image_shape=image_shape)
+        self.seq_length = seq_length
+        self.image_d = image_d
+        self.image_w = image_w
+        self.image_h = image_h
+        self.img_seq = []
+        self.compile()
+        self.optimizer = "rmsprop"
+
+    def compile(self):
+        self.model.compile(optimizer=self.optimizer,loss='mse')
+
+    def run(self, img_arr):
+        if img_arr.shape[2] == 3 and self.image_d == 1:
+            img_arr = dk.utils.rgb2gray(img_arr)
+
+        while len(self.img_seq) < self.seq_length:
+            self.img_seq.append(img_arr)
+
+        self.img_seq = self.img_seq[1:]
+        self.img_seq.append(img_arr)
+
+        img_arr = np.array(self.img_seq).reshape(1, self.seq_length, self.image_h, self.image_w, self.image_d)
+        outputs = self.model.predict([img_arr])
+        steering = outputs[0][0]
+        throttle = outputs[0][1]
+        return steering, throttle
+
+def rnn_lstm_lyw(seq_length=3, num_outputs=2, image_shape=(120, 160, 3)):
+
+    img_seq_shape = (seq_length,) + image_shape
+    img_in = Input(batch_shape=img_seq_shape, name='img_in')
+    drop_out = 0.3
+
+    x = Sequential()
+    x.add(TD(Convolution2D(24, (5, 5), strides=(2, 2), activation='relu'), input_shape=img_seq_shape))
+    x.add(TD(Dropout(drop_out)))
+    x.add(TD(Convolution2D(32, (5, 5), strides=(2, 2), activation='relu')))
+    x.add(TD(Dropout(drop_out)))
+    x.add(TD(Convolution2D(32, (3, 3), strides=(2, 2), activation='relu')))
+    x.add(TD(Dropout(drop_out)))
+    x.add(TD(Convolution2D(32, (3, 3), strides=(1, 1), activation='relu')))
+    x.add(TD(Dropout(drop_out)))
+    x.add(TD(MaxPooling2D(pool_size=(2, 2))))
+    x.add(TD(Flatten(name='flattened')))
+    x.add(TD(Dense(100, activation='relu')))
+    x.add(TD(Dropout(drop_out)))
+
+    x.add(LSTM(128, return_sequences=True, name="LSTM_seq"))
+    x.add(Dropout(.1))
+    x.add(LSTM(128, return_sequences=False, name="LSTM_fin"))
+    x.add(Dropout(.1))
+    x.add(Dense(128, activation='relu'))
+    x.add(Dropout(.1))
+    x.add(Dense(64, activation='relu'))
+    x.add(Dense(10, activation='relu'))
+    x.add(Dense(num_outputs, activation='linear', name='model_outputs'))
+
+    return x
