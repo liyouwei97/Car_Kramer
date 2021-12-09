@@ -429,7 +429,7 @@ def get_model_by_type(model_type, cfg):
     '''
     from donkeycar.parts.keras import KerasRNN_LSTM, KerasBehavioral, \
         KerasCategorical, KerasIMU, KerasLinear, Keras3D_CNN, \
-        KerasLocalizer, KerasLatent, NNVIDIA
+        KerasLocalizer, KerasLatent, NVIDIA
     from donkeycar.parts.tflite import TFLitePilot
  
     if model_type is None:
