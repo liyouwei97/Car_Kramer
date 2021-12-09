@@ -818,3 +818,48 @@ def rnn_lstm_lyw(seq_length=3, num_outputs=2, image_shape=(120, 160, 3)):
     x.add(Dense(num_outputs, activation='linear', name='model_outputs'))
 
     return x
+
+
+
+
+
+
+class NVIDIA(KerasPilot):
+    def __init__(self, num_outputs=2, input_shape=(120, 160, 3), roi_crop=(0, 0), *args, **kwargs):
+        super(NVIDIA1, self).__init__(*args, **kwargs)
+        self.model = CNN_LYW(num_outputs, input_shape, roi_crop)
+        self.compile()
+
+    def compile(self):
+        self.model.compile(optimizer=self.optimizer, loss='mse')
+
+    def run(self, img_arr):
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        outputs = self.model.predict(img_arr)
+        steering = outputs[0]
+        throttle = outputs[1]
+        return steering[0][0], throttle[0][0]
+
+
+def get_nvidia_model(seq_length=3, num_outputs=2, image_shape=(120, 160, 3)):
+    input_shape = adjust_input_shape(input_shape, roi_crop)
+    img_in = Input(shape=input_shape, name='img_in')
+    x = img_in
+    x = Convolution2D(24, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
+    x = Convolution2D(32, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
+    x = Convolution2D(64, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
+    x = Convolution2D(64, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
+    x = Dropout(.5)(x)
+    x = Convolution2D(64, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
+    x = Flatten(name='flattened')(x)
+    x = Dense(1000, activation='elu')(x)
+    x = Dropout(.1)(x)
+    x = Dense(128, activation='elu')(x)
+    outputs = []
+
+    for i in range(num_outputs):
+        outputs.append(Dense(1, activation='linear', name='n_outputs' + str(i))(x))
+    model = Model(inputs=[img_in], outputs=outputs)
+    return model
+
+
