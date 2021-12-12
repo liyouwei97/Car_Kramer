@@ -826,7 +826,7 @@ def rnn_lstm_lyw(seq_length=3, num_outputs=2, image_shape=(120, 160, 3)):
 
 class NVIDIA(KerasPilot):
     def __init__(self, num_outputs=2, input_shape=(120, 160, 3), roi_crop=(0, 0), *args, **kwargs):
-        super(NVIDIA1, self).__init__(*args, **kwargs)
+        super(NVIDIA, self).__init__(*args, **kwargs)
         self.model = CNN_LYW(num_outputs, input_shape, roi_crop)
         self.compile()
 
