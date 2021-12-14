@@ -820,19 +820,13 @@ def rnn_lstm_lyw(seq_length=3, num_outputs=2, image_shape=(120, 160, 3)):
     return x
 
 
-
-
-
-
 class NVIDIA(KerasPilot):
     def __init__(self, num_outputs=2, input_shape=(120, 160, 3), roi_crop=(0, 0), *args, **kwargs):
         super(NVIDIA, self).__init__(*args, **kwargs)
-        self.model = CNN_LYW(num_outputs, input_shape, roi_crop)
+        self.model = get_nvidia(num_outputs, input_shape, roi_crop)
         self.compile()
-
     def compile(self):
         self.model.compile(optimizer=self.optimizer, loss='mse')
-
     def run(self, img_arr):
         img_arr = img_arr.reshape((1,) + img_arr.shape)
         outputs = self.model.predict(img_arr)
@@ -840,26 +834,25 @@ class NVIDIA(KerasPilot):
         throttle = outputs[1]
         return steering[0][0], throttle[0][0]
 
-
-def get_nvidia_model(seq_length=3, num_outputs=2, image_shape=(120, 160, 3)):
+def get_nvidia(num_outputs, input_shape=(120, 160, 3), roi_crop=(0, 0)):
     input_shape = adjust_input_shape(input_shape, roi_crop)
     img_in = Input(shape=input_shape, name='img_in')
     x = img_in
+    # x = Cropping2D(cropping=((60, 0),(0, 0)),input_shape=(120,160,3))
+    # x = Lambda(lambda x: x/127.5 - 1.,Shape=(120,160.3))
     x = Convolution2D(24, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
-    x = Convolution2D(32, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
-    x = Convolution2D(64, (5, 5), strides=(2, 2), activation='elu', padding="same")(x)
-    x = Convolution2D(64, (3, 3), strides=(2, 2), activation='elu', padding="same")(x)
-    x = Dropout(.5)(x)
+    x = Convolution2D(32, (5, 5), strides=(1, 1), activation='elu', padding="same")(x)
+    x = Convolution2D(64, (5, 5), strides=(1, 1), activation='elu', padding="same")(x)
     x = Convolution2D(64, (3, 3), strides=(1, 1), activation='elu', padding="same")(x)
+    x = Dropout(drop)(x)
+    x = Convolution2D(64, (3, 3), strides=(1, 1), activation='elu', padding="same")(x)
+    x = Dropout(.5)(x)
     x = Flatten(name='flattened')(x)
     x = Dense(1000, activation='elu')(x)
     x = Dropout(.1)(x)
     x = Dense(128, activation='elu')(x)
     outputs = []
-
     for i in range(num_outputs):
         outputs.append(Dense(1, activation='linear', name='n_outputs' + str(i))(x))
     model = Model(inputs=[img_in], outputs=outputs)
     return model
-
-
