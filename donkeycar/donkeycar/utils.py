@@ -430,7 +430,7 @@ def get_model_by_type(model_type, cfg):
     from donkeycar.parts.keras import KerasRNN_LSTM, KerasBehavioral, \
         KerasCategorical, KerasIMU, KerasLinear, Keras3D_CNN, \
         KerasLocalizer, KerasLatent
-#     from donkeycar.parts.keras import NVIDIA
+    from donkeycar.parts.keras import NVIDIA
     from donkeycar.parts.tflite import TFLitePilot
  
     if model_type is None:
@@ -473,8 +473,8 @@ def get_model_by_type(model_type, cfg):
         kl = KerasLYWCNN(input_shape=input_shape, roi_crop=roi_crop)
     elif model_type == "lywrnn":
         kl = KerasRNN_LSTM_LYW(input_shape=input_shape, roi_crop=roi_crop)
-#     elif model_type == "nvidia":
-#         kl = NVIDIA(input_shape=input_shape, roi_crop=roi_crop)
+    elif model_type == "nvidia":
+        kl = NVIDIA(input_shape=input_shape, roi_crop=roi_crop)
     else:
         raise Exception("unknown model type: %s" % model_type)
 
